@@ -12,7 +12,7 @@ const createPatient = (req, res) => {
     });
 };
 
-module.export = {
+module.exports = {
     getPatients,
     createPatient,
 };
