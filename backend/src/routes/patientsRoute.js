@@ -1,4 +1,9 @@
+const validate = require("../middlewares/validate");
 const express = require("express");
+
+const {
+    patientCreateSchema,
+} = require("../schemas/patientSchema");
 
 const {
     getPatients,
@@ -9,7 +14,11 @@ const router = express.Router();
 
 router.get("/", getPatients);
 
-router.post("/", createPatient);
+router.post(
+    "/",
+    validate(patientCreateSchema),
+    createPatient
+);
 
 
 module.exports = router;
