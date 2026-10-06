@@ -9,6 +9,11 @@ const patientCreateSchema = z.object({
     notes: z.string().optional(),
 });
 
+const patientIdSchema = z.object({
+    id: z.coerce.number().int().positive(),
+});
+
 module.exports = {
     patientCreateSchema,
+    patientIdSchema
 };
