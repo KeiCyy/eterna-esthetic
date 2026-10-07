@@ -139,7 +139,7 @@ const updatePatient = async (req, res) => {
             RETURNING *
         `;
 
-        const result = await pool.query(req, res);
+        const result = await pool.query(query, values);
 
         if (result.rows.length === 0) {
             res.status(400).json({
@@ -161,10 +161,47 @@ const updatePatient = async (req, res) => {
 
 };
 
+const deletePatient = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const result = await pool.query(
+            `
+            UPDATE patients
+            SET
+                is_active = FALSE,
+                updated_at = CURRENT_TIMESTAMP
+            WHERE id = $1
+            RETURNING *
+            `,
+            [id]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({
+                message: "Patient not found",
+            });
+        };
+
+        res.status(200).json({
+            message: "Patient deactivated successfully",
+            patient: result.rows[0],
+        });
+
+    } catch (error) {
+        console.error(error);
+
+        res.status(500).json({
+            message: "Internal Server Error",
+        });
+    };
+};
+
 
 module.exports = {
     getPatients,
     getPatientById,
     createPatient,
     updatePatient,
+    deletePatient,
 };

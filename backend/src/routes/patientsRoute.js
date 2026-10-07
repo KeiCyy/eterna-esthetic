@@ -13,6 +13,7 @@ const {
     createPatient,
     getPatientById,
     updatePatient,
+    deletePatient,
 } = require("../controllers/patientController");
 
 const router = express.Router();
@@ -36,6 +37,12 @@ router.patch(
     validate(patientUpdateSchema),
     updatePatient
 );
+
+router.delete(
+    "/:id",
+    validateParams(patientIdSchema),
+    deletePatient
+)
 
 
 module.exports = router;
