@@ -5,12 +5,14 @@ const express = require("express");
 const {
     patientCreateSchema,
     patientIdSchema,
+    patientUpdateSchema,
 } = require("../schemas/patientSchema");
 
 const {
     getPatients,
     createPatient,
-    getPatientById
+    getPatientById,
+    updatePatient,
 } = require("../controllers/patientController");
 
 const router = express.Router();
@@ -26,6 +28,13 @@ router.post(
     "/",
     validate(patientCreateSchema),
     createPatient
+);
+
+router.patch(
+    "/:id",
+    validateParams(patientIdSchema),
+    validate(patientUpdateSchema),
+    updatePatient
 );
 
 

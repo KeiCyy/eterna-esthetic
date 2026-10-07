@@ -3,7 +3,7 @@ const validateParams = (schema) => {
         const result = schema.safeParse(req.params);
 
         if (!result.sucess) {
-            res.status(400).json({
+            return res.status(400).json({
                 message: "Invalid input parameters",
                 errors: result.errors.issues,
             });

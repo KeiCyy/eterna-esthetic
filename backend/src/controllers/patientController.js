@@ -99,8 +99,72 @@ const createPatient = async (req, res) => {
     }
 };
 
+
+const updatePatient = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const updates = req.body;
+
+        const allowedFields = [
+            "first_name",
+            "last_name",
+            "phone",
+            "email",
+            "birth_date",
+            "notes",
+        ];
+
+        const fields = [];
+        const values = [];
+
+        let parameterIndex = 1;
+
+        for (const [key, value] of Object.entries(updates)) {
+            if (allowedFields.includes(key)) {
+                fields.push(`${key} = $${parameterIndex}`);
+                values.push(value);
+
+                parameterIndex++;
+            }
+        };
+
+        values.push(id);
+
+        const query = `
+            UPDATE patients
+            SET
+                ${fields.join(", ")},
+                updated_at = CURRENT_TIMESTAMP
+            WHERE id = $${parameterIndex}
+            RETURNING *
+        `;
+
+        const result = await pool.query(req, res);
+
+        if (result.rows.length === 0) {
+            res.status(400).json({
+                message: "Patient Not Found"
+            });
+        };
+
+        res.status(200).json({
+            patient: result.rows[0]
+        });
+    } catch (error) {
+        console.error(error)
+
+        res.status(500).json({
+            message: "Internal Server Error"
+        });
+
+    }
+
+};
+
+
 module.exports = {
     getPatients,
     getPatientById,
     createPatient,
+    updatePatient,
 };
