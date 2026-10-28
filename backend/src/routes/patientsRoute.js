@@ -1,11 +1,16 @@
+
+const createPatientController = require("../controllers/patientController");
+
 const validate = require("../middlewares/validate");
 const validateParams = require("../middlewares/validateParams");
+const validateQuery = require("../middlewares/validateQuery");
 const express = require("express");
 
 const {
     patientCreateSchema,
     patientIdSchema,
     patientUpdateSchema,
+    patientQuerySchema,
 } = require("../schemas/patientSchema");
 
 const {
@@ -13,36 +18,43 @@ const {
     createPatient,
     getPatientById,
     updatePatient,
-    deletePatient,
+    deactivatePatient,
 } = require("../controllers/patientController");
 
-const router = express.Router();
+const createPatientRouter = (controller) => {
 
-router.get("/", getPatients);
+    const router = express.Router();
 
-router.get(
-    "/:id",
-    validateParams(patientIdSchema),
-    getPatientById);
+    router.get(
+        "/",
+        validateQuery(patientQuerySchema),
+        controller.getPatients);
 
-router.post(
-    "/",
-    validate(patientCreateSchema),
-    createPatient
-);
+    router.get(
+        "/:id",
+        validateParams(patientIdSchema),
+        controller.getPatientById);
 
-router.patch(
-    "/:id",
-    validateParams(patientIdSchema),
-    validate(patientUpdateSchema),
-    updatePatient
-);
+    router.post(
+        "/",
+        validate(patientCreateSchema),
+        controller.createPatient
+    );
 
-router.delete(
-    "/:id",
-    validateParams(patientIdSchema),
-    deletePatient
-)
+    router.patch(
+        "/:id",
+        validateParams(patientIdSchema),
+        validate(patientUpdateSchema),
+        controller.updatePatient
+    );
 
+    router.delete(
+        "/:id",
+        validateParams(patientIdSchema),
+        controller.deactivatePatient
+    );
 
-module.exports = router;
+    return router;
+};
+
+module.exports = createPatientRouter;

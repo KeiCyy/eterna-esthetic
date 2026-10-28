@@ -2,16 +2,11 @@ const validateParams = (schema) => {
     return (req, res, next) => {
         const result = schema.safeParse(req.params);
 
-        if (!result.sucess) {
-            return res.status(400).json({
-                message: "Invalid input parameters",
-                errors: result.errors.issues,
-            });
-        };
+        if (!result.success) {
+            return next(result.error);
+        }
 
-        req.params = result.data;
-
-        next();
+        return next();
     };
 };
 

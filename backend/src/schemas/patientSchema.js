@@ -1,13 +1,13 @@
 const { z } = require("zod");
 
 const patientCreateSchema = z.object({
-    first_name: z.string().trim().min(1).max(100),
-    last_name: z.string().trim().min(1).max(100),
+    firstName: z.string().trim().min(1).max(100),
+    lastName: z.string().trim().min(1).max(100),
     phone: z.string().trim().max(30).optional(),
     email: z.string().trim().email().max(255).optional(),
-    birth_date: z.string().optional(),
+    birthDate: z.string().optional(),
     notes: z.string().optional(),
-});
+}).strict();
 
 const patientIdSchema = z.object({
     id: z.coerce.number().int().positive(),
@@ -22,8 +22,15 @@ const patientUpdateSchema = patientCreateSchema
         }
     );
 
+const patientQuerySchema = z.object({
+    page: z.coerce.number().int().min(1).default(1),
+    limit: z.coerce.number().int().min(1).max(100).default(10),
+    search: z.string().trim().max(100).default(""),
+}).strict();
+
 module.exports = {
     patientCreateSchema,
     patientIdSchema,
-    patientUpdateSchema
+    patientUpdateSchema,
+    patientQuerySchema,
 };
