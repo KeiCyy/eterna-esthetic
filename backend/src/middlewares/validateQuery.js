@@ -6,7 +6,7 @@ const validateQuery = (schema) => {
             return next(result.error);
         }
 
-        res.locals.validateQuery = result.data;
+        res.locals.validatedQuery = result.data;
 
         return next();
     };
